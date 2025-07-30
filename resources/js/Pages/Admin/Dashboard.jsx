@@ -32,22 +32,16 @@ export default function AdminDashboard() {
                                             Dashboard
                                         </Link>
                                         <Link
-                                            href="/admin/users"
+                                            href="/admin/categories"
                                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                                         >
-                                            Users
+                                            Categories
                                         </Link>
                                         <Link
-                                            href="/admin/settings"
+                                            href="/admin/products"
                                             className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                                         >
-                                            Settings
-                                        </Link>
-                                        <Link
-                                            href="/admin/profile"
-                                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                                        >
-                                            Profile
+                                            Products
                                         </Link>
                                     </div>
                                 </div>

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\AuthController;
 
 // Admin Routes - All routes are protected with auth middleware
@@ -14,6 +16,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Admin Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Products Management
+    Route::resource('products', ProductController::class);
+
+    // Categories Management
+    Route::resource('categories', CategoryController::class);
 
     // Admin Users Management (example)
     Route::get('/users', function () {
