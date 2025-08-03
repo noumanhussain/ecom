@@ -1,8 +1,38 @@
 import React from "react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import AdminHeader from "../AdminHeader";
+import Table, {
+    TableRow,
+    TableCell,
+    TableCellCustom,
+} from "@/Components/Table";
+import RadioSwitch from "@/Components/RadioSwitch";
 
 export default function Categories({ categories, auth }) {
+    const headers = ["ID", "Name", "Slug", "Status", "Actions"];
+
+    const handleDelete = (categoryId) => {
+        if (confirm("Are you sure you want to delete this category?")) {
+            router.delete(route("admin.categories.destroy", categoryId));
+        }
+    };
+
+    const handleStatusToggle = (categoryId, currentStatus) => {
+        // Prevent any default behavior
+        const newStatus = !currentStatus;
+
+        router.patch(
+            route("admin.categories.toggle-status", categoryId),
+            {
+                is_active: newStatus,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+            }
+        );
+    };
+
     return (
         <>
             <Head title="Categories" />
@@ -25,68 +55,56 @@ export default function Categories({ categories, auth }) {
                         </div>
 
                         <div className="mt-6">
-                            <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                ID
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Name
-                                            </th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
-                                        {categories.map((category) => (
-                                            <tr key={category.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                    {category.id}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                    {category.name}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                    <Link
-                                                        href={route(
-                                                            "admin.categories.edit",
-                                                            category.id
-                                                        )}
-                                                        className="text-indigo-600 hover:text-indigo-900 mr-4"
-                                                    >
-                                                        Edit
-                                                    </Link>
-                                                    <button
-                                                        onClick={() => {
-                                                            if (
-                                                                confirm(
-                                                                    "Are you sure you want to delete this category?"
-                                                                )
-                                                            ) {
-                                                                post(
-                                                                    route(
-                                                                        "admin.categories.destroy",
-                                                                        category.id
-                                                                    ),
-                                                                    {
-                                                                        method: "delete",
-                                                                    }
-                                                                );
-                                                            }
-                                                        }}
-                                                        className="text-red-600 hover:text-red-900"
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <Table headers={headers}>
+                                {categories.map((category) => (
+                                    <TableRow key={category.id}>
+                                        <TableCell className="text-gray-500">
+                                            {category.id}
+                                        </TableCell>
+                                        <TableCell>{category.name}</TableCell>
+                                        <TableCell>{category.slug}</TableCell>
+                                        <TableCell>
+                                            <RadioSwitch
+                                                id={`status-${category.id}`}
+                                                name={`status-${category.id}`}
+                                                checked={category.is_active}
+                                                onChange={() =>
+                                                    handleStatusToggle(
+                                                        category.id,
+                                                        category.is_active
+                                                    )
+                                                }
+                                                size="md"
+                                                color="green"
+                                                label={
+                                                    category.is_active
+                                                        ? "Active"
+                                                        : "Inactive"
+                                                }
+                                            />
+                                        </TableCell>
+                                        <TableCellCustom>
+                                            <Link
+                                                href={route(
+                                                    "admin.categories.edit",
+                                                    category.id
+                                                )}
+                                                className="text-indigo-600 hover:text-indigo-900 mr-4"
+                                            >
+                                                Edit
+                                            </Link>
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(category.id)
+                                                }
+                                                className="text-red-600 hover:text-red-900"
+                                            >
+                                                Delete
+                                            </button>
+                                        </TableCellCustom>
+                                    </TableRow>
+                                ))}
+                            </Table>
                         </div>
                     </div>
                 </div>

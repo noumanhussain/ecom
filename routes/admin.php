@@ -22,6 +22,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Categories Management
     Route::resource('categories', CategoryController::class);
+    Route::patch('categories/{id}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
 
     // Admin Users Management (example)
     Route::get('/users', function () {
