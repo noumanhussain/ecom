@@ -4,13 +4,14 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Web\ProductController;
 
 // Include Admin Routes
 require __DIR__ . '/admin.php';
 
 // Public Website Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
+Route::resource('/products', ProductController::class)->names('products');
 // About Page
 Route::get('/about', function () {
     return Inertia::render('Web/About');
@@ -20,11 +21,6 @@ Route::get('/about', function () {
 Route::get('/contact', function () {
     return Inertia::render('Web/Contact');
 })->name('contact');
-
-// Products/Services Page
-Route::get('/products', function () {
-    return Inertia::render('Web/Products');
-})->name('products');
 
 // Authentication Routes (Public)
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

@@ -1,69 +1,13 @@
 import React from "react";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
+import AdminHeader from "../AdminHeader";
 
-export default function Categories({ categories }) {
-    const { post, processing } = useForm();
-
-    const handleLogout = (e) => {
-        e.preventDefault();
-        post("/admin/logout");
-    };
-
+export default function Categories({ categories, auth }) {
     return (
         <>
             <Head title="Categories" />
             <div className="min-h-screen bg-gray-100">
-                {/* Admin Navigation */}
-                <nav className="bg-gray-800">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-center justify-between h-16">
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0">
-                                    <h1 className="text-white text-xl font-bold">
-                                        Admin Panel
-                                    </h1>
-                                </div>
-                                <div className="hidden md:block">
-                                    <div className="ml-10 flex items-baseline space-x-4">
-                                        <Link
-                                            href="/admin"
-                                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                                        >
-                                            Dashboard
-                                        </Link>
-                                        <Link
-                                            href="/admin/categories"
-                                            className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-                                        >
-                                            Categories
-                                        </Link>
-                                        <Link
-                                            href="/admin/products"
-                                            className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                                        >
-                                            Products
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex items-center space-x-4">
-                                <Link
-                                    href="/"
-                                    className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                                >
-                                    View Website
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    disabled={processing}
-                                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
-                                >
-                                    {processing ? "Logging out..." : "Logout"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <AdminHeader auth={auth} />
 
                 {/* Categories Content */}
                 <div className="py-6">
