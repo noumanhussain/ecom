@@ -11,7 +11,8 @@ require __DIR__ . '/admin.php';
 
 // Public Website Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::resource('/products', ProductController::class)->names('products');
+Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/{slug}', [ProductController::class, 'show'])->name('products.show');
 // About Page
 Route::get('/about', function () {
     return Inertia::render('Web/About');

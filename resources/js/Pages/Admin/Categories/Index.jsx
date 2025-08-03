@@ -17,7 +17,7 @@ export default function Categories({ categories, auth }) {
                                 Categories
                             </h1>
                             <Link
-                                href="/admin/categories/create"
+                                href={route("admin.categories.create")}
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                             >
                                 Add New Category
@@ -51,7 +51,10 @@ export default function Categories({ categories, auth }) {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                                     <Link
-                                                        href={`/admin/categories/${category.id}/edit`}
+                                                        href={route(
+                                                            "admin.categories.edit",
+                                                            category.id
+                                                        )}
                                                         className="text-indigo-600 hover:text-indigo-900 mr-4"
                                                     >
                                                         Edit
@@ -64,7 +67,10 @@ export default function Categories({ categories, auth }) {
                                                                 )
                                                             ) {
                                                                 post(
-                                                                    `/admin/categories/${category.id}`,
+                                                                    route(
+                                                                        "admin.categories.destroy",
+                                                                        category.id
+                                                                    ),
                                                                     {
                                                                         method: "delete",
                                                                     }

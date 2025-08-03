@@ -25,7 +25,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Admin/Categories/CreateEdit', [
+            'isEditing' => false
+        ]);
     }
 
     /**
@@ -33,7 +35,20 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories',
+            'description' => 'nullable|string',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $category = new Category();
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->description = $request->description;
+        // $category->image = $request->image;
+        $category->save();
+        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully');
     }
 
     /**
@@ -49,7 +64,12 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::find($id);
+        // dd($category);
+        return Inertia::render('Admin/Categories/CreateEdit', [
+            'isEditing' => true,
+            'category' => $category
+        ]);
     }
 
     /**
@@ -57,7 +77,21 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:categories,slug,' . $id,
+            'description' => 'nullable|string',
+            'is_active' => 'required|boolean',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $category = Category::find($id);
+        $category->name = $request->name;
+        $category->slug = $request->slug;
+        $category->description = $request->description;
+        $category->is_active = $request->is_active;
+        $category->save();
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');
     }
 
     /**
@@ -65,6 +99,8 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::find($id);
+        $category->delete();
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully');
     }
 }
