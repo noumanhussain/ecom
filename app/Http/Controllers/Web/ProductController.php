@@ -19,6 +19,11 @@ class ProductController extends Controller
         // return Inertia::render('Web/Products/Products');
 
         $category = Category::where('slug', $slug)->first();
+
+        if (! $category) {
+            abort(404);
+        }
+
         $products = Product::where('category_id', $category->id)->get();
 
         return Inertia::render('Web/Products/Products', ['category' => $category, 'products' => $products]);
