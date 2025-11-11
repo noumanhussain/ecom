@@ -1,61 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## E-Commerce Admin Portal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository hosts an e-commerce admin portal built with Laravel, Inertia.js, and React. It provides authenticated back-office tooling for managing catalogue entities such as categories and products, alongside public-facing routes rendered through Inertia.
 
-## About Laravel
+### Tech Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   Laravel 11 (PHP 8.2) with Eloquent ORM
+-   Inertia.js bridge with `@inertiajs/react`
+-   React components styled with Tailwind CSS utilities
+-   SQLite database for local development (configurable)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Project Setup
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Install PHP dependencies:
+    ```bash
+    composer install
+    ```
+2. Install Node dependencies and build assets:
+    ```bash
+    npm install
+    npm run build   # or npm run dev for Vite dev server
+    ```
+3. Copy `.env.example` to `.env` and configure database credentials.
+4. Generate the application key:
+    ```bash
+    php artisan key:generate
+    ```
+5. Run migrations and seeders:
+    ```bash
+    php artisan migrate --seed
+    ```
+    The seeder populates demo categories and products so the admin UI renders meaningful data.
+6. Start the application:
+    ```bash
+    php artisan serve
+    ```
+    Visit `http://localhost:8000`.
 
-## Learning Laravel
+### Admin Authentication
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   Admin routes live under the `admin` prefix and are protected by Laravel’s `auth` middleware (`routes/admin.php`).
+-   Use the credential seeded by `DatabaseSeeder` or create an account manually to access the admin dashboard at `/admin`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Admin Categories Route Deep Dive
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The entire `/admin/categories` flow is documented in `docs/admin-categories-route.md`. Highlights:
 
-## Laravel Sponsors
+-   `GET /admin/categories` resolves via `Route::resource('categories', CategoryController::class)` to `App\Http\Controllers\Admin\CategoryController@index`, which loads all categories and returns an Inertia response.
+-   `App\Models\Category` defines fillable fields, casts, and relationships for hierarchical categories and associated products.
+-   React UI lives in `resources/js/Pages/Admin/Categories`:
+    -   `Index.jsx` renders the table view, leveraging shared UI primitives (`Table`, `RadioSwitch`) and Inertia’s `router` helpers for delete/toggle actions.
+    -   `CreateEdit.jsx` powers both create and edit flows through a single component, with `useForm` managing inputs, validation errors, and submission logic to keep forms consistent and reusable.
+-   Supporting seed data is provided in `database/seeders/CategorySeeder.php` to showcase nested categories and status toggling.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Refer to the markdown doc for code excerpts and a step-by-step walkthrough of the request lifecycle, controller responsibilities, frontend composition, and data preparation.
 
-### Premium Partners
+### Frontend Architecture Notes
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   Component reuse is encouraged via `resources/js/Components`, where shared table cells, switches, and headers reside to avoid duplicating markup.
+-   Inertia’s `useForm` hook standardizes client-side form state and error handling, while route generation uses Ziggy to remain DRY across PHP and JavaScript.
 
-## Contributing
+### Testing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Run the default Laravel test suite:
 
-## Code of Conduct
+```bash
+php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Contributing
 
-## Security Vulnerabilities
+1. Create a feature branch.
+2. Make your changes with accompanying documentation/tests.
+3. Submit a pull request describing the motivation and implementation details.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### License
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced under the [MIT license](LICENSE).
